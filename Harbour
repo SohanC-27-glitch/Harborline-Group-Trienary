@@ -1,0 +1,23 @@
+def name_compatible(a, b):
+    a_tokens = clean(a).replace(".", "").split()
+    b_tokens = clean(b).replace(".", "").split()
+
+    if not a_tokens or not b_tokens:
+        return False
+
+    # Allow a single-letter initial to match a full token.
+    def token_matches(x, y):
+        return x == y or (
+            len(x) == 1 and y.startswith(x)
+        ) or (
+            len(y) == 1 and x.startswith(y)
+        )
+
+    if len(a_tokens) == len(b_tokens):
+        if all(token_matches(x, y)
+               for x, y in zip(a_tokens, b_tokens)):
+            return True
+
+    return SequenceMatcher(
+        None, " ".join(a_tokens), " ".join(b_tokens)
+    ).ratio() >= 0.80
